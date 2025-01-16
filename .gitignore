@@ -1,0 +1,10 @@
+DerivedData
+* Data
+project.xcworkspace
+xcshareddata
+xcuserdata
+*.SYM
+SlotsDump
+SlotsDumpOld
+SlotsGrab
+SlotsParse
