@@ -970,19 +970,15 @@ bool FindDirEntry(Ptr findAddr)
 		return false;
 
 	int32_t i;
-	bool result = false;
-
 	dirListEntryPtr de = gDirList;
-	for (i = 0; i < gDirListSize / sizeof(dirListEntry); i++) {
+	for (i = 0; i < gDirListSize / sizeof(dirListEntry); i++, de++) {
 		if (findAddr == de->addr)
 		{
 			fprintf(gOutFile, "duplicate: %s\n", de->name);
-			result = true;
-			break;
+			return true;
 		}
-		de++;
 	}
-	return result;
+	return false;
 }
 
 void AddDirListEntry(Ptr newAddr, const char *newName)
@@ -997,6 +993,7 @@ void AddDirListEntry(Ptr newAddr, const char *newName)
 	de->addr = newAddr;
 	snprintf(de->name, sizeof(de->name), "%s", newName);
 }
+
 
 void CheckAddrRange(Ptr addr)
 {
