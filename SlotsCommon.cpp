@@ -3,6 +3,9 @@
 dirListEntryPtr gDirList = NULL;
 int32_t gDirListSize = 0;
 
+Ptr* gAddrList = NULL;
+int32_t gAddrListSize = 0;
+
 Ptr gTopOfRom = NULL;
 Ptr gStartOfRom = NULL;
 size_t gAddrAfterRom = NULL;
@@ -86,6 +89,35 @@ void WriteChars(uint8_t *p, int32_t numChars)
 	}
 }
 
+
+bool FindAddrEntry(Ptr findAddr)
+{
+	if (!findAddr)
+		return false;
+
+	int32_t i;
+	Ptr * ae = gAddrList;
+	for (i = 0; i < gAddrListSize / sizeof(Ptr); i++, ae++) {
+		if (findAddr == *ae)
+			return true;
+	}
+	return false;
+}
+
+
+void AddAddrEntry(Ptr newAddr)
+{
+	if (!newAddr)
+		return;
+
+	int32_t curLength = gAddrListSize;
+	gAddrListSize += sizeof(Ptr);
+	gAddrList = (Ptr*)realloc(gAddrList, (size_t)gAddrListSize);
+	Ptr* ae = (Ptr*)((Ptr)gAddrList + curLength);
+	*ae = newAddr;
+}
+
+
 void WriteUncoveredBytes()
 {
 	Ptr addr;
@@ -113,7 +145,7 @@ void WriteUncoveredBytes()
 			addr = gTopOfRom - bitNum - 1;
 			count = 0;
 			fprintf(gOutFile, "%08" PRIXPTR ": ", OutAddr(addr));
-			while ((bitNum >= 0) && !BitTst(gCoveredPtr,bitNum))
+			while ((bitNum >= 0) && !BitTst(gCoveredPtr,bitNum) && (count == 0 || !FindAddrEntry(addr)))
 			{
 				bitNum = bitNum - 1;
 				bytes[count] = (uint8_t)*addr;
@@ -1701,6 +1733,7 @@ void WriteData (
 
 	if (!FindDirEntry(dataAddr))
 	{
+		AddAddrEntry(dataAddr);
 		if (sRsrcId != endOfList)
 			switch (whichDir) {
 				case rootDir:
@@ -1885,4 +1918,5 @@ void InitLoopingGlobals()
 	gMinAddr = NULL;
 	gMaxAddr = NULL;
 	gDirListSize = 0;
+	gAddrListSize = 0;
 }

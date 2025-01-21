@@ -131,6 +131,9 @@ typedef struct {
 extern dirListEntryPtr gDirList;
 extern int32_t gDirListSize;
 
+extern Ptr * gAddrList;
+extern int32_t gAddrListSize;
+
 extern Ptr gTopOfRom;
 extern Ptr gStartOfRom;
 extern size_t gAddrAfterRom;
