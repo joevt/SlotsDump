@@ -1594,6 +1594,13 @@ void DoVidAuxParamsDir(uint8_t sRsrcId, Ptr dataAddr)
 		BE_TO_HOST_32(longNum);
 		fprintf(gOutFile, "%" PRId32, longNum);
 		const char * what;
+
+		if (longNum == timingInvalid_SM_T24) {
+			GetBytes(CalcAddr(dataAddr, 4), &longNum, 4);
+			BE_TO_HOST_32(longNum);
+			fprintf(gOutFile, " = timingInvalid_SM_T24 = block size  %" PRId32, longNum);
+		}
+
 		switch (longNum)
 		{
 			case timingInvalid             : what = "timingInvalid"; break;
