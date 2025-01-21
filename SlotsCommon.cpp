@@ -122,6 +122,7 @@ void WriteUncoveredBytes()
 {
 	Ptr addr;
 	int32_t count;
+	int32_t total;
 	uint8_t bytes[32];
 	int16_t i;
 	int32_t bitNum;
@@ -140,6 +141,7 @@ void WriteUncoveredBytes()
 		while ((bitNum >= 0) && BitTst(gCoveredPtr,bitNum))
 			bitNum = bitNum - 1;
 
+		total = 0;
 		if (bitNum >= 0)
 		{
 			addr = gTopOfRom - bitNum - 1;
@@ -158,8 +160,9 @@ void WriteUncoveredBytes()
 					fprintf(gOutFile, " %s", kOpenQuote);
 					WriteChars(bytes, 32);
 					fprintf(gOutFile, "%s\n", kCloseQuote);
-					count = 0;
 					fprintf(gOutFile, "%08" PRIXPTR ": ", OutAddr(addr));
+					count = 0;
+					total += 32;
 				}
 			} /* while */
 			if (count != 0)
@@ -178,9 +181,10 @@ void WriteUncoveredBytes()
 				fprintf(gOutFile, "%s\n", kCloseQuote);
 				fprintf(gOutFile, "%08" PRIXPTR ": ", OutAddr(addr));
 			}
+			total += count;
 
 		} /* if */
-		fprintf(gOutFile, "\n");
+		fprintf(gOutFile, "(%" PRId32 " = %08" PRIX32 " bytes)\n", total, total);
 		fprintf(gOutFile, "\n");
 	} /* while */
 	gDoCovering = true;
