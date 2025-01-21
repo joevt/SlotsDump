@@ -171,6 +171,24 @@ bool CheckDataAddr(void * dataAddr)
 }
 
 
+uint32_t CalcChecksum(Ptr start, int32_t len)
+{
+    uint32_t sum = 0;
+	while (len > 0) {
+        // rotate sum left by one bit
+        if (sum & 0x80000000UL)
+            sum = (sum << 1) | 1;
+        else
+            sum = (sum << 1) | 0;
+		if (len < 9 || len > 12)
+			sum += *(uint8_t*)start;
+		start = CalcAddr(start, 1);
+		len--;
+	}
+	return sum;
+}
+
+
 void GetBytes(void* source, void* dest, int32_t numBytes, bool doSetCovered)
 {
 	if (!CheckDataAddr(source))
@@ -323,7 +341,13 @@ void WriteFHeaderRec(FHeaderRec &fh, Ptr &sResDirFromHead, Ptr headerWhere)
 
 	fprintf(gOutFile, "%20s%02" PRIX8 " %06" PRIX32 " = %08" PRIXPTR "\n",  "fhDirOffset: ", uint8_t(uint32_t(fh.fhDirOffset) >> 24), fh.fhDirOffset & 0x00ffffff, OutAddr(sResDirFromHead));
 	fprintf(gOutFile, "%20s%" PRId32 " ; Start of ROM: %08" PRIXPTR "\n", "fhLength: ", fh.fhLength, OutAddr(gStartOfRom));
-	fprintf(gOutFile, "%20s%08" PRIX32 "\n", "fhCRC: ", fh.fhCRC);
+
+	fprintf(gOutFile, "%20s%08" PRIX32, "fhCRC: ", fh.fhCRC);
+	uint32_t checksum = CalcChecksum(gStartOfRom, fh.fhLength);
+	if (fh.fhCRC == checksum)
+		fprintf(gOutFile, " = ok\n");
+	else
+		fprintf(gOutFile, " = bad (expected: %08" PRIX32 ")\n", checksum);
 
 	fprintf(gOutFile, "%20s%" PRId8 "", "fhROMRev: ", fh.fhROMRev);
 	if (fh.fhROMRev == romRevision)

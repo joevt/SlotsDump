@@ -158,6 +158,7 @@ void WriteUncoveredBytes();
 int32_t Get3(int32_t n);
 bool CheckDataAddr(void * dataAddr);
 void GetBytes(void* source, void* dest, int32_t numBytes, bool doSetCovered = true);
+uint32_t CalcChecksum(Ptr start, int32_t len);
 void RsrcToIdAndOffset(int32_t rsrc, uint8_t &s, int32_t &offset);
 void GetRsrc(Ptr p, uint8_t &s, int32_t &offset);
 int32_t GetSBlock(Ptr source, Ptr &dest);
