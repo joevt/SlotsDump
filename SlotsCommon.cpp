@@ -186,8 +186,11 @@ void WriteUncoveredBytes()
 			total += count;
 
 		} /* if */
-		fprintf(gOutFile, "(%" PRId32 " = %08" PRIX32 " bytes)\n", total, total);
-		fprintf(gOutFile, "\n");
+		if (total)
+		{
+			fprintf(gOutFile, "(%" PRId32 " = %08" PRIX32 " bytes)\n", total, total);
+			fprintf(gOutFile, "\n");
+		}
 	} /* while */
 	gDoCovering = true;
 } /* WriteUncoveredBytes */
