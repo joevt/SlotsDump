@@ -99,23 +99,32 @@ void WriteSInfoRecordAndFHeaderRec(Ptr &sResDirFromHead, Ptr &sRootDirFromXHead)
 	Ptr headerWhere = CalcAddr(gTopOfRom, int32_t(-sizeof(FHeaderRec)));
 	Ptr xHeaderWhere = CalcAddr(gTopOfRom, int32_t(-sizeof(XFHeaderRec)));
 
-	if (gTopOfRom - gStartOfRom >= sizeof(XFHeaderRec))
-	{
-		GetBytes(xHeaderWhere, &xfh, sizeof(XFHeaderRec));
+	for (int i = 0; i < 2; i++) {
+		if (gTopOfRom - gStartOfRom >= sizeof(XFHeaderRec))
+		{
+			GetBytes(xHeaderWhere, &xfh, sizeof(XFHeaderRec));
+		}
+		else
+		{
+			GetBytes(headerWhere, fh, sizeof(FHeaderRec));
+			xHeaderWhere = NULL;
+		}
+		BE_TO_HOST_32(xfh.fhXSuperInit);
+		BE_TO_HOST_32(xfh.fhXSDirOffset);
+		BE_TO_HOST_32(xfh.fhXEOL);
+		BE_TO_HOST_32(xfh.fhXSTstPat);
+		BE_TO_HOST_32(xfh.fhXDirOffset);
+		BE_TO_HOST_32(xfh.fhXLength);
+		BE_TO_HOST_32(xfh.fhXCRC);
+		BE_TO_HOST_32(xfh.fhXTstPat);
+
+		if (fh->fhTstPat == ~testPattern) {
+			fprintf(gOutFile, "Rom is inverted!\n");
+			for (uint8_t *p = (uint8_t *)gStartOfRom; p < (uint8_t *)gTopOfRom; p++)
+				*p = ~*p;
+		} else
+			break;
 	}
-	else
-	{
-		GetBytes(headerWhere, fh, sizeof(FHeaderRec));
-		xHeaderWhere = NULL;
-	}
-	BE_TO_HOST_32(xfh.fhXSuperInit);
-	BE_TO_HOST_32(xfh.fhXSDirOffset);
-	BE_TO_HOST_32(xfh.fhXEOL);
-	BE_TO_HOST_32(xfh.fhXSTstPat);
-	BE_TO_HOST_32(xfh.fhXDirOffset);
-	BE_TO_HOST_32(xfh.fhXLength);
-	BE_TO_HOST_32(xfh.fhXCRC);
-	BE_TO_HOST_32(xfh.fhXTstPat);
 
 	if (fh->fhLength > 0)
 	{
