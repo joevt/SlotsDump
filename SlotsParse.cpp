@@ -209,19 +209,20 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Rom size %" PRId64 " is too big\n", int64_t(size));
 		exit(1);
 	}
+	gRomFileSize = uint32_t(size);
 	
 	fseek(romFile, 0, SEEK_SET);
-	void *romData = malloc(size);
+	void *romData = malloc(gRomFileSize);
 	if (!romData) {
 		fprintf(stderr, "Not enough memory\n");
 		exit(1);
 	}
 
-	fread(romData, 1, size, romFile);
+	fread(romData, 1, gRomFileSize, romFile);
 	fclose(romFile);
 
 	gOutFile = stdout;
-	gTopOfRom = (Ptr)romData + size;
+	gTopOfRom = (Ptr)romData + gRomFileSize;
 	gStartOfRom = (Ptr)romData;
 	gAddrAfterRom = 0xFEFFFFFF + 1; // slot E
 

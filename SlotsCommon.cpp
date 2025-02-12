@@ -6,6 +6,7 @@ int32_t gDirListSize = 0;
 Ptr* gAddrList = NULL;
 int32_t gAddrListSize = 0;
 
+uint32_t gRomFileSize = 0;
 Ptr gTopOfRom = NULL;
 Ptr gStartOfRom = NULL;
 size_t gAddrAfterRom = NULL;
