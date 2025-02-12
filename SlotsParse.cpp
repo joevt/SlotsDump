@@ -130,7 +130,10 @@ void WriteSInfoRecordAndFHeaderRec(Ptr &sResDirFromHead, Ptr &sRootDirFromXHead)
 			fprintf(stderr, "Rom size is %" PRId64 " but header says only %" PRId64 " is used for slot rom data\n", int64_t(gTopOfRom - gStartOfRom), int64_t(fh->fhLength));
 			gStartOfRom = calcStartOfRom;
 		}
+	}
 
+	if (gStartOfRom < gTopOfRom)
+	{
 		gByteLanes = xfh.fhXByteLanes & 0xF;
 
 		numToCover = int32_t(gTopOfRom - gStartOfRom + 8) & ~7;
