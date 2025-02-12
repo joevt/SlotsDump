@@ -147,7 +147,7 @@ void WriteUncoveredBytes()
 			addr = gTopOfRom - bitNum - 1;
 			count = 0;
 			fprintf(gOutFile, "%08" PRIXPTR ": ", OutAddr(addr));
-			while ((bitNum >= 0) && !BitTst(gCoveredPtr,bitNum) && (count == 0 || !FindAddrEntry(addr)))
+			while ((bitNum >= 0) && !BitTst(gCoveredPtr,bitNum))
 			{
 				bitNum = bitNum - 1;
 				bytes[count] = (uint8_t)*addr;
@@ -164,6 +164,8 @@ void WriteUncoveredBytes()
 					count = 0;
 					total += 32;
 				}
+				if (FindAddrEntry(addr))
+					break;
 			} /* while */
 			if (count != 0)
 			{
