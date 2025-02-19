@@ -35,8 +35,8 @@
 
 /* read an unaligned big-endian DWORD (32bit) */
 #define READ_DWORD_BE_U(addr)                                                  \
-    ((((uint8_t*)(addr))[0] << 24) | (((uint8_t*)(addr))[1] << 16) |           \
-     (((uint8_t*)(addr))[2] <<  8) |  ((uint8_t*)(addr))[3]         )
+	((((uint8_t*)(addr))[0] << 24) | (((uint8_t*)(addr))[1] << 16) |           \
+	 (((uint8_t*)(addr))[2] <<  8) |  ((uint8_t*)(addr))[3]         )
 
 #if __LITTLE_ENDIAN__
 #define BE_TO_HOST_16(x) x = READ_WORD_BE_U(&x)

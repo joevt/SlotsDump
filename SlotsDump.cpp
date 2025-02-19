@@ -112,11 +112,11 @@ done:
 
 void WriteIcon(Ptr iconp, const char * title)
 {
-    Handle icon = NewHandle(128);
-    HLock(icon);
-    memcpy(*icon, iconp, 128);
-    HUnlock(icon);
-    
+	Handle icon = NewHandle(128);
+	HLock(icon);
+	memcpy(*icon, iconp, 128);
+	HUnlock(icon);
+
 	Rect r;
 	int16_t width;
 
@@ -129,7 +129,7 @@ void WriteIcon(Ptr iconp, const char * title)
 	}
 	OffsetRect(&r, gCurLeft, gCurTop);
 	PlotIcon(&r, icon);
-    DisposeHandle(icon);
+	DisposeHandle(icon);
 	MoveTo(gCurLeft, gCurTop + 32 + textLineHeight);
 
 	Str255 titleStr;

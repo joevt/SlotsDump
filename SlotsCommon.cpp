@@ -71,7 +71,7 @@ std::string Hex(const void *hexPtr, int numBytes)
 	int len = 0;
 	while (numBytes > 0) {
 		len += snprintf(buf + len, sizeof(buf) - len, "%02" PRIX8 "", *(uint8_t*)hexPtr);
-        hexPtr = (uint8_t*)hexPtr + 1;
+		hexPtr = (uint8_t*)hexPtr + 1;
 		numBytes--;
 	}
 	return buf;
@@ -245,7 +245,7 @@ void GetBytes(void* source, void* dest, int32_t numBytes, bool doSetCovered)
 		if (source < gTopOfRom)
 		{
 			*(char*)dest = *(char*)source;
-            dest = (char*)dest + 1;
+			dest = (char*)dest + 1;
 			source = CalcAddr(source, 1);
 			numBytes--;
 		}
@@ -284,7 +284,7 @@ int32_t GetSBlock(Ptr source, Ptr &dest)
 	GetBytes(source, &len, 4);
 	BE_TO_HOST_32(len);
 	len = len - 4;
-    dest = (Ptr)realloc(dest, (size_t)len);
+	dest = (Ptr)realloc(dest, (size_t)len);
 	source = CalcAddr(source, 4);
 	GetBytes(source, dest, len);
 	return len;
@@ -304,17 +304,17 @@ void GetCString(Ptr source, Ptr &dest)
 
 	len = 0;
 	do {
-        len++;
-        dest = (Ptr)realloc(dest, (size_t)len);
-        destPtr = dest + len - 1;
-        if (source < gTopOfRom) {
-            *destPtr = *source;
-            source = CalcAddr(source, 1);
-        } else {
-            *destPtr = '\0';
+		len++;
+		dest = (Ptr)realloc(dest, (size_t)len);
+		destPtr = dest + len - 1;
+		if (source < gTopOfRom) {
+			*destPtr = *source;
+			source = CalcAddr(source, 1);
+		} else {
+			*destPtr = '\0';
 			printf("CString would exceed rom length\n");
 			fprintf(gOutFile, "CString would exceed rom length\n");
-        }
+		}
 	} while (!(*destPtr == 0));
 
 	// include second null for even length strings
@@ -680,52 +680,52 @@ std::string cTypeString(sRsrcTypeRec &theSRsrcTypeData)
 				case catNetwork: s = "=TypEthernet"; break;
 				case catDock   : s = "=TypStation"; break;
 				default        : s = "=TypeUnknown"; break;
-		    }
-		    break;
+			}
+			break;
 		case  2:
 			switch (theSRsrcTypeData.category) {
 				case catDisplay: s = "=TypLCD"; break;
 				case catCPU    : s = "=Typ68000"; break;
 				case catDock   : s = "=TypDesk"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		case  3:
 			switch (theSRsrcTypeData.category) {
 				case catCPU    : s = "=Typ68020"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		case  4:
 			switch (theSRsrcTypeData.category) {
 				case catCPU    : s = "=Typ68030"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		case  5:
 			switch (theSRsrcTypeData.category) {
 				case catCPU    : s = "=Typ68040"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		case 11:
 			switch (theSRsrcTypeData.category) {
 				case catIntBus : s = "=TypXPT"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		case 12:
 			switch (theSRsrcTypeData.category) {
 				case catIntBus : s = "=TypSIM"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		case 21:
 			switch (theSRsrcTypeData.category) {
 				case catCPU    : s = "=TypAppleII"; break;
 				default        : s = "=TypeUnnown"; break;
-		    }
-		    break;
+			}
+			break;
 		default: s = "=TypUnknown"; break;
 	}
 	snprintf(buf, sizeof(buf), "%04" PRIX16 "%s", theSRsrcTypeData.cType, s);
@@ -742,14 +742,14 @@ std::string DrSWString(sRsrcTypeRec &theSRsrcTypeData)
 				case catBoard  : s = "=DrSWBoard"; break;
 				case catCPU    : s = "=DrSWMacCPU"; break;
 				default        : s = "=DrSWUnknown"; break;
-		    }
-		    break;
+			}
+	break;
 		case     1:
 			switch (theSRsrcTypeData.category) {
 				case catCPU    : s = "=DrSWAppleIIe"; break;
 				default        : s = "=DrSWApple"; break;
-		    }
-		    break;
+			}
+			break;
 		case     2: s = "=DrSWCompanyA"; break;
 		case 0x101: s = "=DrSWDepewEngineering"; break;
 		case 0x104: s = "=DrSWMacsBug"; break;
@@ -768,8 +768,8 @@ std::string DrHWString(sRsrcTypeRec &theSRsrcTypeData)
 			switch (theSRsrcTypeData.category) {
 				case catBoard  : s = "=DrHWBoard"; break;
 				default        : s = "=DrHWUnknown"; break;
-		    }
-		    break;
+			}
+			break;
 		case   1:
 			switch (theSRsrcTypeData.category) {
 				case catDisplay: s = "=DrHWTFB"; break;
@@ -778,22 +778,22 @@ std::string DrHWString(sRsrcTypeRec &theSRsrcTypeData)
 				case catDock   : s = "=DrHWDeskBar"; break;
 //				case cat?      : s = "=DrHWATT3210"; break;
 				default        : s = "=DrHWUnknown"; break;
-		    }
-		    break;
+			}
+			break;
 		case   2:
 			switch (theSRsrcTypeData.category) {
 //				case catDisplay: s = "=DrHWSTB3"; break; /* Assigned by Kevin Mellander for STB-3 hardware. */
 				case catDisplay: s = "=DrHWSTB"; break; /* (Both STB-3 and STB-4 share the same video hardware.) */
 				case catDock   : s = "=DrHWHooperDock"; break;
 				default        : s = "=DrHWproductA"; break;
-		    }
-		    break;
+			}
+			break;
 		case   3:
 			switch (theSRsrcTypeData.category) {
 				case catDisplay: s = "=DrHWproductB"; break;
 				default        : s = "=DrHWBSC"; break;
-		    }
-		    break;
+			}
+			break;
 		case   4: s = "=DrHWproductC"; break;
 		case   5: s = "=DrHWproductD"; break;
 
@@ -802,8 +802,8 @@ std::string DrHWString(sRsrcTypeRec &theSRsrcTypeData)
 				case catDisplay: s = "=DrHWMicroDock"; break; /* video hardware id's  - <catDisplay><typVideo>*/
 				case catProto  : s = "=DrHWBootBug"; break;
 				default        : s = "=DrHWUnknown"; break;
-		    }
-		    break;
+			}
+			break;
 
 		case 0x0018: s = "=DrHWRBV"; break; /* IIci Aurora25/16 hw ID */
 		case 0x0019: s = "=DrHWJMFB"; break; /* 4¥8/8¥24 NuBus card */
@@ -1092,7 +1092,7 @@ void DoRsrcDir(uint8_t sRsrcId, int32_t offset, Ptr dataAddr, Ptr &miscData, con
 		{
 			if (!CheckDataAddr(dataAddr))
 				return;
-            GetBytes(dataAddr, &temp_bytes[0], 128);
+			GetBytes(dataAddr, &temp_bytes[0], 128);
 			WriteIcon((Ptr)(&temp_bytes[0]), curStr.c_str());
 			fprintf(gOutFile, "\n");
 			break;

@@ -424,11 +424,11 @@ enum {
 };
 
 inline void BitSet(int8_t *bits, uint32_t bit) {
-    bits[bit >> 3] |= (1 << (bit & 7));
+	bits[bit >> 3] |= (1 << (bit & 7));
 }
 
 inline bool BitTst(int8_t *bits, uint32_t bit) {
-    return bits[bit >> 3] & (1 << (bit & 7));
+	return bits[bit >> 3] & (1 << (bit & 7));
 }
 
 #if PRAGMA_STRUCT_ALIGN
