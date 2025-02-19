@@ -213,16 +213,19 @@ bool CheckDataAddr(void * dataAddr)
 }
 
 
-uint32_t CalcChecksum(Ptr start, int32_t len)
+uint32_t CalcChecksum(Ptr start, int32_t fhLength, bool useLength)
 {
-    uint32_t sum = 0;
+	uint32_t len = fhLength;
+	uint32_t sum = 0;
 	while (len > 0) {
-        // rotate sum left by one bit
-        if (sum & 0x80000000UL)
-            sum = (sum << 1) | 1;
-        else
-            sum = (sum << 1) | 0;
-		if (len < 9 || len > 12)
+		// rotate sum left by one bit
+		if (sum & 0x80000000UL)
+			sum = (sum << 1) | 1;
+		else
+			sum = (sum << 1) | 0;
+		if (useLength && len <= 16 && len > 12) // 16,15,14,13
+			sum += (fhLength >> ((len - 13) * 8)) & 255;
+		else if (len < 9 || len > 12) // not 12,11,10,9
 			sum += *(uint8_t*)start;
 		start = CalcAddr(start, 1);
 		len--;
@@ -382,10 +385,14 @@ void WriteFHeaderRec(FHeaderRec &fh, Ptr &sResDirFromHead, Ptr headerWhere)
 	fprintf(gOutFile, "%08" PRIXPTR "\n", OutAddr(headerWhere));
 
 	fprintf(gOutFile, "%20s%02" PRIX8 " %06" PRIX32 " = %08" PRIXPTR "\n",  "fhDirOffset: ", uint8_t(uint32_t(fh.fhDirOffset) >> 24), fh.fhDirOffset & 0x00ffffff, OutAddr(sResDirFromHead));
-	fprintf(gOutFile, "%20s%" PRId32 " ; Start of ROM: %08" PRIXPTR "\n", "fhLength: ", fh.fhLength, OutAddr(gStartOfRom));
+	fprintf(gOutFile, "%20s%" PRId32, "fhLength: ", fh.fhLength);
+	if (fh.fhLength != gRomFileSize)
+		fprintf(gOutFile, " (expected %" PRId32 ")", gRomFileSize);
+	fprintf(gOutFile, " ; Start of ROM: %08" PRIXPTR, OutAddr(gStartOfRom));
+	fprintf(gOutFile, "\n");
 
 	fprintf(gOutFile, "%20s%08" PRIX32, "fhCRC: ", fh.fhCRC);
-	uint32_t checksum = CalcChecksum(gStartOfRom, fh.fhLength);
+	uint32_t checksum = CalcChecksum(gStartOfRom, fh.fhLength ? fh.fhLength : gRomFileSize, true);
 	if (fh.fhCRC == checksum)
 		fprintf(gOutFile, " = ok\n");
 	else
