@@ -577,6 +577,11 @@ const char * GetRsrcKind(uint8_t sRsrcId, DirType whichDir)
 								case 130: return " ; MinROMSp        ";
 								default : return " ; sRsrcUnknown    ";
 							}
+						case catDock:
+							switch (sRsrcId) {
+								case 0x50: return " ; sRsrcDock       ";
+								default  : return " ; sRsrcUnknown    ";
+							}
 						default:
 							return " ; sRsrcUnknown    ";
 					}
@@ -1378,6 +1383,18 @@ void DoRsrcDir(uint8_t sRsrcId, int32_t offset, Ptr dataAddr, Ptr &miscData, con
 								int(offset >> 3) & 1,
 								int(offset >> 4) & 1
 							);
+							break;
+						default:
+							fprintf(gOutFile, "\n");
+							break;
+					}
+					break;
+				case catDock:
+					switch (sRsrcId) {
+						case sRsrcDock:
+							if (!CheckDataAddr(dataAddr))
+								return;
+							WriteSBlock(dataAddr, miscData, "sRsrcDock", false);
 							break;
 						default:
 							fprintf(gOutFile, "\n");
