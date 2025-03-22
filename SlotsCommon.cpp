@@ -518,30 +518,32 @@ const char * GetRsrcKind(uint8_t sRsrcId, DirType whichDir)
 		case rsrcDir:
 		case gammaDir:
 			switch (sRsrcId) {
-				case 1 : return " ; sRsrcType       ";
-				case 2 : return " ; sRsrcName       ";
-				case 3 : return " ; sRsrcIcon       ";
-				case 4 : return " ; sRsrcDrvrDir    ";
-				case 5 : return " ; sRsrcLoadRec    ";
-				case 6 : return " ; sRsrcBootRec    ";
-				case 7 : return " ; sRsrcFlags      ";
-				case 8 : return " ; sRsrcHWDevId    ";
-				case 10: return " ; minorBaseOS     ";
-				case 11: return " ; minorLength     ";
-				case 12: return " ; majorBaseOS     ";
-				case 13: return " ; majorLength     ";
-				case 15: return " ; sRsrcCicn       ";
-				case 16: return " ; sRsrcicl8       ";
-				case 17: return " ; sRsrcicl4       ";
-				case 64: return " ; sGammaDir       ";
-				case 32: return " ; boardId         ";
-				case 33: return " ; PRAMInitData    ";
-				case 34: return " ; primaryInit     ";
-				case 35: return " ; timeOutConst    ";
-				case 36: return " ; vendorInfo      ";
-				case 37: return " ; boardFlags      ";
-				case 38: return " ; secondaryInit   ";
-				case 65: return " ; sRsrcVidNames   ";
+				case    1: return " ; sRsrcType       ";
+				case    2: return " ; sRsrcName       ";
+				case    3: return " ; sRsrcIcon       ";
+				case    4: return " ; sRsrcDrvrDir    ";
+				case    5: return " ; sRsrcLoadRec    ";
+				case    6: return " ; sRsrcBootRec    ";
+				case    7: return " ; sRsrcFlags      ";
+				case    8: return " ; sRsrcHWDevId    ";
+				case   10: return " ; minorBaseOS     ";
+				case   11: return " ; minorLength     ";
+				case   12: return " ; majorBaseOS     ";
+				case   13: return " ; majorLength     ";
+				case   15: return " ; sRsrcCicn       ";
+				case   16: return " ; sRsrcicl8       ";
+				case   17: return " ; sRsrcicl4       ";
+				case   64: return " ; sGammaDir       ";
+				case   32: return " ; boardId         ";
+				case   33: return " ; PRAMInitData    ";
+				case   34: return " ; primaryInit     ";
+				case   35: return " ; timeOutConst    ";
+				case   36: return " ; vendorInfo      ";
+				case   37: return " ; boardFlags      ";
+				case   38: return " ; secondaryInit   ";
+				case   65: return " ; sRsrcVidNames   ";
+				case 0x55: return " ; sDiagRec        ";
+				case 0x56: return " ; sDiagRec+1      ";
 				default:
 					switch (gSRsrcTypeData.category)
 					{
@@ -1287,6 +1289,21 @@ void DoRsrcDir(uint8_t sRsrcId, int32_t offset, Ptr dataAddr, Ptr &miscData, con
 				fprintf(gOutFile, "%08" PRIX32 "\n", longNum);
 			}
 			break;
+
+		case 0x55:
+			{
+				if (!CheckDataAddr(dataAddr))
+					return;
+				WriteSBlock(dataAddr, miscData, "sDiagRec", false);
+				break;
+			}
+		case 0x56:
+			{
+				if (!CheckDataAddr(dataAddr))
+					return;
+				WriteSBlock(dataAddr, miscData, "sDiagRec+1", false);
+				break;
+			}
 
 		default:
 			switch (gSRsrcTypeData.category)
