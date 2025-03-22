@@ -958,7 +958,7 @@ void WritePRAMInitData(Ptr dataAddr)
 }
 
 
-void WriteSBlock(Ptr dataAddr, Ptr &miscData, const char *description)
+void WriteSBlock(Ptr dataAddr, Ptr &miscData, const char *description, bool print_description)
 {
 	if (!CheckDataAddr(dataAddr))
 		return;
@@ -968,7 +968,10 @@ void WriteSBlock(Ptr dataAddr, Ptr &miscData, const char *description)
 
 	int32_t miscDataLen = GetSBlock(dataAddr, miscData);
 	longNum = (uint32_t)miscDataLen + 4;
-	fprintf(gOutFile, "block size = %02" PRIX8 " %06" PRIX32 "  %s:", uint8_t(longNum >> 24), longNum & 0x00ffffff, description);
+	fprintf(gOutFile, "block size = %02" PRIX8 " %06" PRIX32 "  ", uint8_t(longNum >> 24), longNum & 0x00ffffff);
+	if (print_description)
+		fprintf(gOutFile, "%s", description);
+	fprintf(gOutFile, ":");
 	longNum = (longNum - 4) / 2;
 	const char *moreIndicator = "";
 	if (longNum > 16 && strcmp(description, "sVidParms")) {
@@ -1356,7 +1359,7 @@ void DoRsrcDir(uint8_t sRsrcId, int32_t offset, Ptr dataAddr, Ptr &miscData, con
 						{
 							if (!CheckDataAddr(dataAddr))
 								return;
-							WriteSBlock(dataAddr, miscData, "sPict");
+							WriteSBlock(dataAddr, miscData, "sPict", false);
 							break;
 						}
 						default:
@@ -1645,7 +1648,7 @@ void DoVidParmDir(uint8_t sRsrcId, Ptr dataAddr, Ptr &miscData)
 	{
 		if (!CheckDataAddr(dataAddr))
 			return;
-		WriteSBlock(dataAddr, miscData, "sVidParms");
+		WriteSBlock(dataAddr, miscData, "sVidParms", true);
 	}
 	else
 		fprintf(gOutFile, "\n");
