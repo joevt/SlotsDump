@@ -5,7 +5,23 @@
 #include <string>
 #include <cinttypes>
 #ifdef __SLOTSDUMP__
-}
+	#if 0
+		}
+	#else
+	/*	// The above } is not necessary after making the following corrections to the
+		// Metrowerks Code Warrior Pro 4 cinttypes header:
+
+	-	inline uintmax_t wcstoumax(const wchar_t * restrict nptr, wchar_t ** restrict endptr, int base)
+	+	inline uintmax_t wcstoumax(const wchar_t *          nptr, wchar_t **          endptr, int base)
+
+		#ifdef __cplusplus
+	+		}
+			#ifdef _MSL_USING_NAMESPACE
+				}
+			#endif
+		#endif
+	*/
+	#endif
 #endif
 #include <stdio.h>
 #include <stdlib.h>
