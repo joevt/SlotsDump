@@ -92,7 +92,19 @@ done:
 }
 
 
-void WriteSInfoRecordAndFHeaderRec(uint8_t slot)
+bool slots_tested = 0;
+bool last_was_complete = false;
+
+
+void write_separator(bool is_complete) {
+	if (slots_tested == 0 || last_was_complete != is_complete) {
+		fprintf(gOutFile, "\n");
+		fprintf(gOutFile, "-----------------------------------------\n");
+		last_was_complete = is_complete;
+	}
+}
+
+void WriteSInfoRecordAndFHeaderRec(uint8_t slot, bool write_progress)
 {
 	FHeaderRec fh;
 	memset(&fh, 0, sizeof(fh));
@@ -103,15 +115,24 @@ void WriteSInfoRecordAndFHeaderRec(uint8_t slot)
 	sp.spResult = int32_t(&fh);
 
 	OSErr headErr = SReadFHeader(&sp);
-	if (headErr)
+	if (headErr) {
+		if (write_progress) {
+			write_separator(false);
+			fprintf(gOutFile, "slot %02" PRIX8 ": no header\n", slot);
+		}
 		return;
+	}
 
 	OSErr infoErr = SFindSInfoRecPtr(&sp);
-	if (infoErr)
+	if (infoErr) {
+		if (write_progress) {
+			write_separator(false);
+			fprintf(gOutFile, "slot %02" PRIX8 ": no info\n", slot);
+		}
 		return;
+	}
 
-	fprintf(gOutFile, "\n");
-	fprintf(gOutFile, "-----------------------------------------\n");
+	write_separator(true);
 	fprintf(gOutFile, "slot %02" PRIX8 ":\n", slot);
 
 	SInfoRecPtr si = SInfoRecPtr(sp.spResult);
@@ -128,13 +149,36 @@ void WriteSInfoRecordAndFHeaderRec(uint8_t slot)
 } /* WriteSInfoRecordAndFHeaderRec */
 
 
+char slotlist[256];
+
 void SlotsDumpMain()
 {
-	uint8_t slot = 0;
-	do {
-		WriteSInfoRecordAndFHeaderRec(slot);
-		slot++;
-	} while (slot != 0);
+	printf("Enter slots to read separated by commas (default = all):");
+	fgets(slotlist, sizeof(slotlist), stdin);
+
+	if (slotlist[0]) {
+		uint32_t slot = 0;
+		char *rest = slotlist;
+
+		char *token;
+		while ((token = strtok(rest, ",")) != NULL) {
+			rest = NULL;
+			slot = strtoul(token, NULL, 16);
+			if (slot <= 255) {
+				WriteSInfoRecordAndFHeaderRec((uint8_t)slot, true);
+				slots_tested++;
+			}
+		}
+	} else {
+		uint8_t slot = 0;
+		do {
+			WriteSInfoRecordAndFHeaderRec(slot, false);
+			slot++;
+			slots_tested++;
+		} while (slot != 0);
+	}
+
+	write_separator(!last_was_complete);
 } /* SlotsDumpMain */
 
 
@@ -146,7 +190,5 @@ int main(/*int argc, char **argv */)
 
 	SlotsDumpMain();
 
-	fprintf(gOutFile, "\n");
-	fprintf(gOutFile, "-----------------------------------------\n");
 	printf("done\n");
 } /* Main */
