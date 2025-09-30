@@ -284,6 +284,14 @@ int32_t GetSBlock(Ptr source, Ptr &dest)
 	GetBytes(source, &len, 4);
 	BE_TO_HOST_32(len);
 	len = len - 4;
+	if (len < 0 || len > gRomFileSize) {
+		printf("SBLock length is out of range\n");
+		if (gOutFile != stdout) {
+			fprintf(gOutFile, "SBLock length is out of range\n");
+		}
+		dest = NULL;
+		throw 1;
+	}
 	dest = (Ptr)realloc(dest, (size_t)len);
 	source = CalcAddr(source, 4);
 	GetBytes(source, dest, len);
@@ -1929,6 +1937,7 @@ void WriteSResourceDirectory(Ptr dirPtr, DirType whichDir, const std::string cur
 		fprintf(gOutFile, " #  sRsrcId  offset  result   note         |  #     id     offset  result   note\n");
 */
 	}
+	try {
 	do {
 #if 0
 		if (TestKey(0x3B))
@@ -1959,6 +1968,9 @@ void WriteSResourceDirectory(Ptr dirPtr, DirType whichDir, const std::string cur
 		dirPtr = CalcAddr(dirPtr,4);
 		i++;
 	} while (sRsrcId != endOfList);
+	} catch (...) {
+		fprintf(gOutFile, "Leaving this directory\n");
+	}
 	gLevel = gLevel - 1;
 } /* WriteSResourceDirectory */
 
