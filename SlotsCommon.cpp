@@ -562,6 +562,7 @@ const char * GetRsrcKind(uint8_t sRsrcId, DirType whichDir)
 								case 0x7B: return " ; sVidAuxParams   ";
 								case 0x7C: return " ; sDebugger       ";
 								case 0x7E: return " ; sVidParmDir     ";
+								case 0x8C: return " ; sBkltParmDir    ";
 								case 0xB6: return " ; sUndefinedID    ";
 								default  : return " ; sRsrcUnknown    ";
 							}
@@ -637,6 +638,7 @@ const char * GetRsrcKind(uint8_t sRsrcId, DirType whichDir)
 		case vidNamesDir:
 		case vidAuxParamsDir:
 		case vidParmDir:
+		case bkltParmDir:
 			return " ;                 ";
 
 	} /* switch whichDir */
@@ -989,7 +991,7 @@ void WriteSBlock(Ptr dataAddr, Ptr &miscData, const char *description, bool prin
 	fprintf(gOutFile, ":");
 	longNum = (longNum - 4) / 2;
 	const char *moreIndicator = "";
-	if (longNum > 16 && strcmp(description, "sVidParms")) {
+	if (longNum > 16 && strcmp(description, "sVidParms") && strcmp(description, "sBkltParms")) {
 		longNum = 16;
 		moreIndicator = " ...";
 	}
@@ -1385,6 +1387,17 @@ void DoRsrcDir(uint8_t sRsrcId, int32_t offset, Ptr dataAddr, Ptr &miscData, con
 							WriteSResourceDirectory(dataAddr, vidParmDir, curStr);
 							break;
 						}
+
+						case sBkltParmDir:
+						{
+							if (!CheckDataAddr(dataAddr))
+								return;
+							AddDirListEntry(dataAddr, curStr.c_str());
+							fprintf(gOutFile, "\n");
+							WriteSResourceDirectory(dataAddr, bkltParmDir, curStr);
+							break;
+						}
+
 						case 0xB6:
 						{
 							if (!CheckDataAddr(dataAddr))
@@ -1697,6 +1710,19 @@ void DoVidParmDir(uint8_t sRsrcId, Ptr dataAddr, Ptr &miscData)
 } /* vidParmDir */
 
 
+void DoBkltParmDir(uint8_t sRsrcId, Ptr dataAddr, Ptr &miscData)
+{
+	if (sRsrcId != endOfList)
+	{
+		if (!CheckDataAddr(dataAddr))
+			return;
+		WriteSBlock(dataAddr, miscData, "sBkltParms", true);
+	}
+	else
+		fprintf(gOutFile, "\n");
+} /* bkltParmDir */
+
+
 void DoVidAuxParamsDir(uint8_t sRsrcId, Ptr dataAddr)
 {
 	uint32_t longNum;
@@ -1894,6 +1920,10 @@ void WriteData (
 
 			case vidParmDir:
 				DoVidParmDir(sRsrcId, dataAddr, miscData);
+				break;
+
+			case bkltParmDir:
+				DoBkltParmDir(sRsrcId, dataAddr, miscData);
 				break;
 
 			case vidAuxParamsDir:

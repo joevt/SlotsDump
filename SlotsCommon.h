@@ -84,7 +84,8 @@ typedef enum {
 				gammaDir,
 				vidModeDir,
 				vidAuxParamsDir,
-				vidParmDir
+				vidParmDir,
+				bkltParmDir
 } DirType;
 
 // sResource: sBlockTransferInfo, mBlockTransferInfo bit defines
@@ -212,6 +213,7 @@ void DoVidModeDir(uint8_t sRsrcId, int32_t offset, Ptr dataAddr, Ptr &miscData);
 void DoDrvrDir(uint8_t sRsrcId, Ptr dataAddr);
 void DoGammaDirOrVidNamesDir(uint8_t sRsrcId, DirType whichDir, Ptr dataAddr, Ptr &miscData);
 void DoVidParmDir(uint8_t sRsrcId, Ptr dataAddr, Ptr &miscData);
+void DoBkltParmDir(uint8_t sRsrcId, Ptr dataAddr, Ptr &miscData);
 void DoVidAuxParamsDir(uint8_t sRsrcId, Ptr dataAddr);
 void WriteData (
 	uint8_t sRsrcId,
