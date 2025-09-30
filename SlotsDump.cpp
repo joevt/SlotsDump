@@ -46,7 +46,9 @@ void DoErr(const char * msg, OSErr err)
 	if (err != noErr)
 	{
 		printf("Error occured.%s in %s\n", ErrS(err).c_str(), msg);
-		fprintf(gOutFile, "Error occured.%s in %s\n", ErrS(err).c_str(), msg);
+		if (gOutFile != stdout) {
+			fprintf(gOutFile, "Error occured.%s in %s\n", ErrS(err).c_str(), msg);
+		}
 	}
 }
 

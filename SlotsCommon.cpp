@@ -42,7 +42,9 @@ void SetCovered(void * p, int32_t len)
 		if (numBits < 0)
 		{
 			printf("topOfRom:%08" PRIXPTR " p:%08" PRIXPTR " numBits:%" PRId32 "\n", OutAddr(gTopOfRom), OutAddr(p), numBits);
-			fprintf(gOutFile, "topOfRom:%08" PRIXPTR " p:%08" PRIXPTR " numBits:%" PRId32 "\n", OutAddr(gTopOfRom), OutAddr(p), numBits);
+			if (gOutFile != stdout) {
+				fprintf(gOutFile, "topOfRom:%08" PRIXPTR " p:%08" PRIXPTR " numBits:%" PRId32 "\n", OutAddr(gTopOfRom), OutAddr(p), numBits);
+			}
 		}
 		for (bitNum = numBits - len; bitNum < numBits; bitNum++)
 			if (bitNum >= 0)
@@ -252,8 +254,10 @@ void GetBytes(void* source, void* dest, int32_t numBytes, bool doSetCovered)
 		else
 		{
 			printf("Bytes would exceed rom length numBytes:%" PRId32 " start:%" PRIXPTR " source:%" PRIXPTR "\n", numBytes, OutAddr(startPtr), OutAddr(source));
-			fprintf(gOutFile, "Bytes would exceed rom length numBytes:%" PRId32 " start:%" PRIXPTR " source:%" PRIXPTR "\n", numBytes, OutAddr(startPtr), OutAddr(source));
-			fflush(gOutFile);
+			if (gOutFile != stdout) {
+				fprintf(gOutFile, "Bytes would exceed rom length numBytes:%" PRId32 " start:%" PRIXPTR " source:%" PRIXPTR "\n", numBytes, OutAddr(startPtr), OutAddr(source));
+				fflush(gOutFile);
+			}
 			break;
 		}
 	}
@@ -321,7 +325,9 @@ void GetCString(Ptr source, Ptr &dest)
 		} else {
 			*destPtr = '\0';
 			printf("CString would exceed rom length\n");
-			fprintf(gOutFile, "CString would exceed rom length\n");
+			if (gOutFile != stdout) {
+				fprintf(gOutFile, "CString would exceed rom length\n");
+			}
 		}
 	} while (!(*destPtr == 0));
 
