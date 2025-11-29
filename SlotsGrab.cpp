@@ -145,7 +145,10 @@ void WriteSInfoRecordAndFHeaderRec(uint8_t slot, bool write_progress)
 	fprintf(gOutFile, "FHeaderRec:\n");
 	Ptr sResDirFromHead = NULL;
 	WriteFHeaderRec(fh, sResDirFromHead, headerWhere);
-	DumpROM(slot, gStartOfRom, fh.fhLength);
+	int32_t len;
+	for (len = 1; len < fh.fhLength; len <<= 1);
+	Ptr romstart = CalcAddr(gTopOfRom, -len);
+	DumpROM(slot, romstart, len);
 } /* WriteSInfoRecordAndFHeaderRec */
 
 
