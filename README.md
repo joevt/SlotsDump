@@ -6,6 +6,9 @@ For each slot, parse the Slot Manager data and dump the slot ROM to a binary fil
 ## SlotsGrab
 For each slot, dump the slot ROM to a binary file.
 
+## SlotsMem
+For each slot, dump the entire address space to a binary file.
+
 # Modern macOS command line tools:
 
 ## SlotsParse
